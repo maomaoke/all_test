@@ -1,10 +1,12 @@
+package array;
+
 /**
  * @author chenkechao
  * @date 2019-07-06 10:39
  */
-public class Array<Item> {
+public class Array<E> {
 
-    private Item[] data;
+    private E[] data;
     /**
      * size 变量实际上是指向数组下一个元素的下标
      */
@@ -13,7 +15,7 @@ public class Array<Item> {
     private static int DEFAULT_CAPACITY = 10;
 
     public Array(int capacity) {
-        data = (Item[]) new Object[capacity];
+        data = (E[]) new Object[capacity];
         size = 0;
     }
 
@@ -33,14 +35,14 @@ public class Array<Item> {
         return size == 0;
     }
 
-    public void add(int index, Item e) {
-
-        if (size == getCapacity()) {
-            throw new IllegalArgumentException("Add element failed because array is filled");
-        }
+    public void add(int index, E e) {
 
         if (index < 0 || index > size) {
             throw new IllegalArgumentException("Add element failed because index left than zero or greater than size");
+        }
+
+        if (size == data.length) {
+            resize(data.length * 2);
         }
 
         for (int i = size - 1; i >= index; i--) {
@@ -51,31 +53,39 @@ public class Array<Item> {
         size++;
     }
 
-    public void addLast(Item e) {
+    public void addLast(E e) {
         add(size, e);
     }
 
-    public void addFirst(Item e) {
+    public void addFirst(E e) {
         add(0, e);
     }
 
-    public Item get(int index) {
+    public E get(int index) {
         if (index < 0 || index >= size) {
             throw new IllegalArgumentException("");
         }
         return data[index];
     }
 
-    public void set(int index, Item e) {
+    public E getLast() {
+        return get(size-1);
+    }
+
+    public E getFirst() {
+        return get(0);
+    }
+
+    public void set(int index, E e) {
         if (index < 0 || index >= size) {
             throw new IllegalArgumentException("");
         }
         data[index] = e;
     }
 
-    public boolean contains(Item e) {
+    public boolean contains(E e) {
         for (int i = 0; i < size; i++) {
-            if (data[i] == e) {
+            if (data[i].equals(e)) {
                 return true;
             }
         }
@@ -84,40 +94,58 @@ public class Array<Item> {
 
 
 
-    public int find(Item e) {
+    public int find(E e) {
         for (int i = 0; i < size; i++) {
-            if (data[i] == e) {
+            if (data[i].equals(e)) {
                 return i;
             }
         }
         return -1;
     }
 
-    public Item remove(int index) {
+    public E remove(int index) {
         if (index < 0 || index >= size) {
             throw new IllegalArgumentException("");
         }
-        Item result = data[index];
+
+
+        E result = data[index];
         for (int i = index + 1; i < size; i++) {
             data[i-1] = data[i];
         }
         size--;
+        //回收元素
+        data[size] = null;
+
+        if (size == data.length / 4 && data.length / 2 != 0) {
+            resize(data.length / 2);
+        }
+
         return result;
     }
 
-    public Item removeFirst() {
+    public E removeFirst() {
         return remove(0);
     }
 
-    public Item removeLast() {
+    public E removeLast() {
         return remove(size - 1);
     }
 
-    public void removeElement(Item e) {
+    public void removeElement(E e) {
         int index = find(e);
         if (index != -1) {
             remove(index);
         }
+    }
+
+    private void resize(int newCapacity) {
+        E[] tmp = (E[]) new Object[newCapacity];
+        for (int i = 0; i < data.length; i++) {
+            tmp[i] = data[i];
+        }
+        data = tmp;
+//        data = Arrays.copyOf(data, newCapacity);
     }
 
 
@@ -125,7 +153,7 @@ public class Array<Item> {
     public String toString() {
 
         StringBuilder res = new StringBuilder();
-        res.append(String.format("Array: size = %d , capacity = %d\n", size, data.length));
+        res.append(String.format("array.Array: size = %d , capacity = %d\n", size, data.length));
         res.append('[');
         for (int i = 0; i < size; i++) {
             res.append(data[i]);
