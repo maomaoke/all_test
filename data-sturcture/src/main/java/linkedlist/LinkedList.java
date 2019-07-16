@@ -40,11 +40,11 @@ public class LinkedList<E> {
         size = 0;
     }
 
-    boolean isEmpty() {
+    public boolean isEmpty() {
         return size == 0;
     }
 
-    int getSize() {
+    public int getSize() {
         return size;
     }
 
@@ -124,6 +124,31 @@ public class LinkedList<E> {
         }
 
         return false;
+    }
+
+    public E remove(int index) {
+        if (index < 0 || index >= size) {
+            throw new IllegalArgumentException("");
+        }
+        //find e which index
+        Node<E> pre = dummyHead;
+        for (int i = 0; i < index; i++) {
+            pre = pre.next;
+        }
+        //remove
+        Node<E> tmp = pre.next;
+        pre.next = tmp.next;
+        tmp.next = null;
+        size--;
+        return tmp.e;
+    }
+
+    public E removeFirst() {
+        return remove(0);
+    }
+
+    public E removeLast() {
+        return remove(size - 1);
     }
 
     @Override
