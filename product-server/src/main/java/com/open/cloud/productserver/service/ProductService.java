@@ -1,5 +1,7 @@
 package com.open.cloud.productserver.service;
 
+import com.open.cloud.productserver.dto.ProductListDTO;
+
 import java.util.List;
 
 /**
@@ -8,4 +10,6 @@ import java.util.List;
  */
 public interface ProductService {
 
+
+    List<ProductListDTO> list();
 }

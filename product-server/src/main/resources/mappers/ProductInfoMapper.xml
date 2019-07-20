@@ -6,16 +6,22 @@
             <idArg column="product_id" javaType="java.lang.Long" jdbcType="BIGINT"/>
             <arg column="product_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
             <arg column="product_price" javaType="java.math.BigDecimal" jdbcType="DECIMAL"/>
-            <arg column="product_stock" javaType="java.lang.Integer" jdbcType="INT"/>
+            <arg column="product_stock" javaType="java.lang.Integer" jdbcType="INTEGER"/>
             <arg column="product_description" javaType="java.lang.String" jdbcType="VARCHAR"/>
             <arg column="product_icon" javaType="java.lang.String" jdbcType="VARCHAR"/>
-            <arg column="product_status" javaType="java.lang.Boolean" jdbcType="TINYINT"/>
+            <arg column="product_status" javaType="java.lang.Integer" jdbcType="TINYINT"/>
             <arg column="category_type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
             <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
             <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
         </constructor>
     </resultMap>
+    <sql id="Base_Column_List">
+      product_id, product_name, product_price, product_stock, product_description, product_icon, product_status,
+      category_type, create_time, update_time
+    </sql>
     <select id="selectByStatus" parameterType="list" resultMap="BaseResultMap">
-        select * from product_info where `status` = #{status}
+        SELECT
+        <include refid="Base_Column_List"/>
+         FROM product_info WHERE `product_status` = #{status}
     </select>
 </mapper>
