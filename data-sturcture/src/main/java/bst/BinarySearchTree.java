@@ -5,7 +5,11 @@ package bst;
  * @date 2019-07-24-21:14
  */
 
+import com.sun.istack.internal.NotNull;
+
+import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Queue;
 
 /**
  * 不包含重复元素()
@@ -14,6 +18,7 @@ import java.util.Objects;
 public class BinarySearchTree<E extends Comparable<E>> {
 
     private class Node<E> {
+        @NotNull
         E data;
         Node<E> left;
         Node<E> right;
@@ -42,6 +47,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
     }
 
     public void add(E e) {
+
         root = add(root, e);
     }
 
@@ -53,6 +59,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
      */
     private Node<E> add(Node<E> node, E e) {
         if (Objects.isNull(node)) {
+            size ++;
             return new Node<>(e);
         }
 
@@ -131,5 +138,136 @@ public class BinarySearchTree<E extends Comparable<E>> {
         postOrder(node.left);
         postOrder(node.right);
         System.out.println(node.data);
+    }
+
+    public void levelOrder() {
+        Queue<Node<E>> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            Node<E> node = queue.remove();
+            System.out.println(node);
+            if (Objects.nonNull(node.left)) {
+                queue.add(node.left);
+            }
+            if (Objects.nonNull(node.right)) {
+                queue.add(node.right);
+            }
+        }
+    }
+
+    public E minimum() {
+        if (size == 0) {
+            throw new IllegalArgumentException("current size is zero");
+        }
+        return minimum(root).data;
+    }
+
+    private Node<E> minimum(Node<E> node) {
+        if (Objects.isNull(node.left)) {
+            return node;
+        }
+        return minimum(node.left);
+    }
+
+    public E maximum() {
+        if (size == 0) {
+            throw new IllegalArgumentException("current size is zero");
+        }
+        return maximum(root).data;
+    }
+
+    /**
+     * 返回以 node 节点为根的二分搜索树的最大值所在的节点
+     * @return
+     */
+    private Node<E> maximum(Node<E> node) {
+        if (Objects.isNull(node.right)) {
+            return node;
+        }
+        return maximum(node.right);
+    }
+
+    public E removeMin() {
+        E minimum = minimum();
+
+        root = removeMin(root);
+
+        return minimum;
+    }
+
+    /**
+     * 删除掉以 node 为根的二分搜索树中的最小节点
+     * @param node
+     * @return 返回删除节点后新的二分搜索树的根
+     */
+    private Node<E> removeMin(Node<E> node) {
+        if (Objects.isNull(node.left)) {
+            size --;
+            return node.right;
+        }
+        node.left = removeMin(node.left);
+        return node;
+    }
+
+    public E removeMax() {
+        E maximum = maximum();
+        root = removeMax(root);
+        return maximum;
+    }
+
+    private Node<E> removeMax(Node<E> node) {
+        if (Objects.isNull(node.right)) {
+            size --;
+            return node.left;
+        }
+        node.right = removeMax(node);
+        return node;
+    }
+
+    public void remove(E e) {
+        if (size == 0) {
+            throw new IllegalArgumentException("current size is zero");
+        }
+        root = remove(root, e);
+    }
+
+    /**
+     *
+     * @param node
+     * @param e
+     * @return
+     */
+    private Node<E> remove(Node<E> node, E e) {
+        // 终止条件
+        if (Objects.isNull(node)) {
+            return null;
+        }
+
+        // 子问题
+        if (e.compareTo(node.data) < 0) {
+            // recursion left sub-tree
+            node.left = remove(node.left, e);
+            return node;
+        } else if (e.compareTo(node.data) > 0) {
+            // recursion right sub-tree
+            node.right = remove(node.right, e);
+            return node;
+        } else {
+            // equal
+            if (Objects.isNull(node.left)) {
+                size --;
+                return node.right;
+            }
+            if (Objects.isNull(node.right)) {
+                size --;
+                return node.left;
+            }
+
+            // 右子树的最小节点
+            Node<E> successor = minimum(node.right);
+            successor.right = removeMin(node.right);
+            successor.left = node.left;
+            return successor;
+        }
     }
 }
