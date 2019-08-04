@@ -19,6 +19,14 @@ public class Array<E> {
         size = 0;
     }
 
+    public Array(E[] array) {
+        data = (E[]) new Object[array.length];
+        for (int i = 0; i < array.length; i++) {
+            data[i] = array[i];
+        }
+        size = array.length;
+    }
+
     public Array() {
         this(DEFAULT_CAPACITY);
     }
@@ -69,7 +77,7 @@ public class Array<E> {
     }
 
     public E getLast() {
-        return get(size-1);
+        return get(size - 1);
     }
 
     public E getFirst() {
@@ -93,7 +101,6 @@ public class Array<E> {
     }
 
 
-
     public int find(E e) {
         for (int i = 0; i < size; i++) {
             if (data[i].equals(e)) {
@@ -111,7 +118,7 @@ public class Array<E> {
 
         E result = data[index];
         for (int i = index + 1; i < size; i++) {
-            data[i-1] = data[i];
+            data[i - 1] = data[i];
         }
         size--;
         //回收元素
@@ -148,6 +155,14 @@ public class Array<E> {
 //        data = Arrays.copyOf(data, newCapacity);
     }
 
+    public void swap(int i, int j) {
+        if (i < 0 || i >= size || j < 0 || j >= size) {
+            throw new IllegalArgumentException("index is illegal ");
+        }
+        E tmp = data[i];
+        data[i] = data[j];
+        data[j] = tmp;
+    }
 
     @Override
     public String toString() {
