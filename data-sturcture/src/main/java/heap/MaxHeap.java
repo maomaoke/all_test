@@ -89,7 +89,7 @@ public class MaxHeap<E extends Comparable<E>>  {
          */
     }
 
-    private E findMax() {
+    public E findMax() {
         if (data.getSize() == 0) {
             throw new IllegalArgumentException("can not findMax when heap is empty");
         }
