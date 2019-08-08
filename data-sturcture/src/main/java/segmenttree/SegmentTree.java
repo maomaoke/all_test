@@ -116,6 +116,42 @@ public class SegmentTree<E> {
         return merger.merge(leftResult, rightResult);
     }
 
+    public void set(int index, E e) {
+        if (index < 0 || index >= data.length) {
+            throw new IllegalArgumentException("index is illegal");
+        }
+        data[index] = e;
+
+    }
+
+    /**
+     * 在以 treeIndex为根的线段树中更新index 的值为 e
+     * @param treeIndex
+     * @param l
+     * @param r
+     * @param index
+     * @param e
+     */
+    private void set(int treeIndex, int l, int r, int index, E e) {
+        //1.递归到底
+        if (l == r) {
+            tree[treeIndex] = e;
+            return;
+        }
+
+        int mid = l + (r - l) / 2;
+        int leftTreeIndex = leftChild(treeIndex);
+        int rightTreeIndex = rightChild(treeIndex);
+
+        if (index <= mid) {
+            set(leftTreeIndex, l, mid, index, e);
+        } else {
+            set(rightTreeIndex, mid + 1, r, index, e);
+        }
+        //2.用更小规模的解来构建原问题的解
+        tree[treeIndex] = this.merger.merge(tree[leftTreeIndex], tree[rightTreeIndex]);
+    }
+
 
     public static void main(String[] args) {
         Integer[] arr = {-2, 0, 3, -5, 2, -1};
