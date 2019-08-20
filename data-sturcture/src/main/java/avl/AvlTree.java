@@ -118,6 +118,13 @@ public class AvlTree<K extends Comparable<K>, V> {
         return this.size == 0;
     }
 
+    public void set(K key, V newValue) {
+        Node<K, V> node = getNode(root, key);
+        if (Objects.isNull(node)) {
+            throw new IllegalArgumentException(" the key doesn't exist");
+        }
+        node.value = newValue;
+    }
 
     public void add(K key, V value) {
         root = add(root, key, value);
