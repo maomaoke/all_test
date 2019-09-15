@@ -17,13 +17,13 @@ import java.util.Queue;
  */
 public class BinarySearchTree<E extends Comparable<E>> {
 
-    private class Node<E> {
+    private static class Node<E> {
         @NotNull
         E data;
         Node<E> left;
         Node<E> right;
 
-        public Node(E data) {
+        Node(E data) {
             this.data = data;
             left = null;
             right = null;
