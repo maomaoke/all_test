@@ -1,5 +1,6 @@
 package com.open.demo.rabbit;
 
+import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -10,8 +11,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 /*
- * 制定监听队列
+ * 指定监听队列
  */
+//@RabbitListener(queuesToDeclare = {@Queue("hello")})
 @RabbitListener(queues = {"hello"})
 public class Receiver {
 
