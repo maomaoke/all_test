@@ -1,41 +1,78 @@
-package map;
+package redblacktree;
 
 import java.util.Objects;
 
 /**
  * @author chenkechao
- * @date 2019-08-02 20:21
+ * @date 2019-08-26 21:27
  */
-public class BinarySearchTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
+public class RadBlackTree<K extends Comparable<K>, V> {
+
+    private static final boolean RED = true;
+    private static final boolean BLACK = false;
 
     private static class Node<K, V> {
         private K key;
         private V value;
         Node<K, V> left, right;
+        private boolean color;
 
         private Node(K key, V value) {
             this.key = key;
             this.value = value;
             this.left = null;
             this.right = null;
+            this.color = RED;
         }
     }
 
     private Node<K, V> root;
     private int size;
 
-    public BinarySearchTreeMap() {
+    public RadBlackTree() {
         root = null;
-        size = 0;
+        size++;
     }
 
-    @Override
-    public void add(K key, V value) {
-        root = add(root, key, value);
+    private Node<K, V> leftRotate(Node<K, V> node) {
+        Node<K, V> x = node.right;
+        node.right = x.left;
+        x.left = node;
+
+        x.color = node.color;
+        node.color = RED;
+
+        return x;
+    }
+
+    private Node<K, V> rightRotate(Node<K, V> node) {
+        Node<K, V> x = node.left;
+        node.left = x.right;
+        x.right = node;
+
+        x.color = node.color;
+        node.color = RED;
+
+        return x;
     }
 
     /**
-     * 向以 node 为根节点的二分搜索树中插入元素`new Node<>(k, v)`
+     * 颜色翻转
+     * @param node
+     */
+    private void flipColors(Node<K, V> node) {
+        node.color = RED;
+        node.left.color = BLACK;
+        node.right.color = BLACK;
+    }
+
+    public void add(K key, V value) {
+        root = add(root, key, value);
+        root.color = BLACK;
+    }
+
+    /**
+     * 向以 node 为根节点色红黑树中插入元素`new Node<>(k, v)`
      *
      * @param node
      * @param k
@@ -58,11 +95,28 @@ public class BinarySearchTreeMap<K extends Comparable<K>, V> implements Map<K, V
         } else {
             node.value = v;
         }
+
+        //维护红黑树的性质
+        if (isRed(node.right) && !isRed(node.left)) {
+            //左旋转
+            node = leftRotate(node);
+        }
+
+        if (isRed(node.left) && isRed(node.left.left)) {
+            //右旋转
+            node = rightRotate(node);
+        }
+
+        if (isRed(node.left) && isRed(node.right)) {
+            //颜色翻转
+            flipColors(node);
+        }
+
         return node;
     }
 
     /**
-     * 返回以 node 为根节点的二分搜索树中,key所在的节点
+     * 返回以 node 为根节点的红黑树中,key所在的节点
      *
      * @param node
      * @param key
@@ -81,7 +135,6 @@ public class BinarySearchTreeMap<K extends Comparable<K>, V> implements Map<K, V
         }
     }
 
-    @Override
     public V remove(K key) {
         Node<K, V> node = getNode(root, key);
         if (Objects.nonNull(node)) {
@@ -116,7 +169,7 @@ public class BinarySearchTreeMap<K extends Comparable<K>, V> implements Map<K, V
             }
 
             if (Objects.isNull(node.right)) {
-                size --;
+                size--;
                 return node.left;
             }
 
@@ -158,18 +211,15 @@ public class BinarySearchTreeMap<K extends Comparable<K>, V> implements Map<K, V
         return node;
     }
 
-    @Override
     public boolean contains(K key) {
         return Objects.nonNull(getNode(root, key));
     }
 
-    @Override
     public V get(K key) {
         Node<K, V> node = getNode(root, key);
         return Objects.nonNull(node) ? node.value : null;
     }
 
-    @Override
     public void set(K key, V newValue) {
         Node<K, V> node = getNode(root, key);
         if (Objects.isNull(node)) {
@@ -178,13 +228,18 @@ public class BinarySearchTreeMap<K extends Comparable<K>, V> implements Map<K, V
         node.value = newValue;
     }
 
-    @Override
     public int getSize() {
         return size;
     }
 
-    @Override
     public boolean isEmpty() {
         return size == 0;
+    }
+
+    private boolean isRed(Node<K, V> node) {
+        if (Objects.isNull(node)) {
+            return BLACK;
+        }
+        return node.color;
     }
 }

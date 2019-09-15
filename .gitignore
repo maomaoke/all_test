@@ -1,7 +1,7 @@
 */HELP.md
 
 ## maven
-/target/
+**/target/
 *.cmd
 */mvnw
 
