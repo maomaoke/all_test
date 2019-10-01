@@ -19,10 +19,9 @@
         <module>data-structure</module>
         <module>generator</module>
         <module>common</module>
-        <module>product-service</module>
-        <module>order-service</module>
         <module>design-pattern</module>
         <module>redis</module>
+        <module>spring-feature</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>
