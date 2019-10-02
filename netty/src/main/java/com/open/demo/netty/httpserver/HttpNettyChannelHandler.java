@@ -3,6 +3,10 @@ package com.open.demo.netty.httpserver;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 
+/**
+ * @author chenkechao
+ * @date 2019-10-01
+ */
 public class HttpNettyChannelHandler implements ChannelHandler {
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
