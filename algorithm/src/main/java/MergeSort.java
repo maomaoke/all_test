@@ -67,7 +67,7 @@ public class MergeSort {
         for (int i = left + 1; i <= right ; i++) {
             Comparable tmp = arr[i];
             int j;
-            for (j = i; j > left && arr[j -1].compareTo(arr[j]) > 0; j --) {
+            for (j = i; j > left && arr[j -1].compareTo(tmp) > 0; j --) {
                 arr[j] = arr[j - 1];
             }
             arr[j] = tmp;
