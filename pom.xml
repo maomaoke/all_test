@@ -23,6 +23,7 @@
         <module>redis</module>
         <module>spring-feature</module>
         <module>algorithm</module>
+        <module>validation</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>
