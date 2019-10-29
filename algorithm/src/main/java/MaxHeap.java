@@ -72,7 +72,7 @@ public class MaxHeap<E extends Comparable> {
             if (j + 1 <= count && data[j + 1].compareTo(data[j]) > 0) {
                 j++;
             }
-            if (data[k].compareTo(data[j]) > 0) {
+            if (data[k].compareTo(data[j]) >= 0) {
                 break;
             }
             swap(k, j);
