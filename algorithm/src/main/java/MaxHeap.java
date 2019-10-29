@@ -8,14 +8,28 @@ public class MaxHeap<E extends Comparable> {
 
     private volatile int count;
     private Comparable[] data;
+    private volatile int capacity;
 
     public MaxHeap(int capacity) {
         data = new Comparable[capacity + 1];
         count = 0;
+        this.capacity = capacity;
     }
 
     public MaxHeap() {
         this(DEFAULT_CAPACITY);
+    }
+
+    public MaxHeap(Comparable[] arr) {
+        data = new Comparable[arr.length + 1];
+        capacity = arr.length;
+        for (int i = 0; i < arr.length; i++) {
+            data[i + 1] = arr[i];
+        }
+        count = arr.length;
+        for (int i = count / 2; i >= 1; i--) {
+            shiftDown(i);
+        }
     }
 
     //root index = 1
@@ -23,7 +37,7 @@ public class MaxHeap<E extends Comparable> {
     // right child = 2 * parent_index + 1
 
     public synchronized void insert(Comparable e) {
-        if (data.length == count + 1) {
+        if (capacity == count + 1) {
             //扩容
             resize(data.length * 2 - 1);
         }
