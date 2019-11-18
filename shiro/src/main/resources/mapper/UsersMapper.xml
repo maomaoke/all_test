@@ -4,4 +4,11 @@
     <select id="getUser" resultType="com.open.demo.shiro.pojo.entity.Users">
         select * from users where username = #{username} and password = #{password}
     </select>
+
+    <select id="selectPermissionListByUsername" resultType="string">
+        select rp.permission from users as u
+        left join user_roles as ur on u.username = ur.username
+        left join roles_permissions as rp on ur.role_name = rp.role_name
+        where u.username = #{username}
+    </select>
 </mapper>

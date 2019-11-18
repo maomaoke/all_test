@@ -1,10 +1,13 @@
 package com.open.demo.shiro.service.impl;
 
+import com.open.demo.shiro.dao.RolesPermissionsMapper;
 import com.open.demo.shiro.dao.UsersMapper;
 import com.open.demo.shiro.pojo.entity.Users;
 import com.open.demo.shiro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author CHEN-KE-CHAO
@@ -19,5 +22,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Users getUser(String username, String password) {
         return usersMapper.getUser(username, password);
+    }
+
+    @Override
+    public List<String> listPermissionByUsername(String username) {
+        return usersMapper.selectPermissionListByUsername(username);
     }
 }

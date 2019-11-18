@@ -1,7 +1,31 @@
 server:
-  port: 8888
+  port: 9000
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/shiro?userSSL=false
     username: root
     password: 123456
+  redis:
+    host: localhost
+    port: 6379
+
+shiro:
+  session:
+    prefix: ${system.airport.plegStation}:session
+    expire: 1800
+    kickOutUrl: /kick-out
+  cache:
+    prefix: ${system.airport.plegStation}:cache
+    expire: 120
+  loginUrl: /login
+  anonymityUrl: /login, /unAuthorized, /unLogin, /kick-out
+
+logging:
+  level:
+    root: info
+
+#机场三字码
+system:
+  airport:
+    plegStation: WMT
+

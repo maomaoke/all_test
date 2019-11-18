@@ -1,15 +1,16 @@
 package com.open.demo.shiro.config;
 
+import com.google.common.collect.Sets;
 import com.open.demo.shiro.pojo.entity.Users;
 import com.open.demo.shiro.service.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -34,6 +35,7 @@ public class CustomRealm extends AuthorizingRealm {
         Users user = userService.getUser(principal, credentials);
 
         if (Objects.nonNull(user)) {
+
             return new SimpleAuthenticationInfo(principal, credentials, getName());
         }
         return null;
@@ -42,7 +44,12 @@ public class CustomRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 
-        return null;
+        //获取用户所有权限
+        String username = (String) principals.getPrimaryPrincipal();
+        List<String> permissions = userService.listPermissionByUsername(username);
+        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+        authorizationInfo.setStringPermissions(Sets.newConcurrentHashSet(permissions));
+        return authorizationInfo;
     }
 
 }

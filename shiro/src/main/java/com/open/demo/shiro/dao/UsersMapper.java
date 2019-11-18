@@ -5,6 +5,8 @@ import com.open.demo.shiro.pojo.entity.Users;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -18,4 +20,5 @@ public interface UsersMapper extends BaseMapper<Users> {
 
     Users getUser(@Param("username") String username, @Param("password") String password);
 
+    List<String> selectPermissionListByUsername(String username);
 }
