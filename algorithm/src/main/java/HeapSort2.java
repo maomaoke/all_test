@@ -17,9 +17,9 @@ public class HeapSort2 {
     private static void shiftDown(Comparable[] arr, int k) {
 
         int count = arr.length;
-        while (k < count - 1) {
-            if (arr[k].compareTo())
-        }
+//        while (k < count - 1) {
+//            if (arr[k].compareTo())
+//        }
     }
 
     private static void swap(Comparable[] arr, int i, int j) {
