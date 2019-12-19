@@ -3,8 +3,6 @@ package com.open.demo.shiro.config;
 import com.open.demo.shiro.event.LoginSuccessEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.shiro.cache.Cache;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.DefaultSessionKey;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -12,14 +10,11 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.context.ApplicationListener;
-import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -33,24 +28,21 @@ public class KickOutSessionControlFilter extends AccessControlFilter implements 
 
     private static final String KICK_OUT_KEY = "kick_out";
 
-    private static final String CACHE_KEY = "kick_out_cache";
-
-    private final Cache<String, Deque<Serializable>> cache;
+    private RedisTemplate<String, Deque<Serializable>> redisTemplate;
 
     private SessionManager sessionManager;
 
-
-    private int maxSession;
-    private boolean kickOutAfter;
-    private String kickOutUrl;
+    private final int maxSession;
+    private final boolean kickOutAfter;
+    private final String kickOutUrl;
 
     public KickOutSessionControlFilter(SessionManager sessionManager, ShiroSessionProperties sessionProperties,
-                                       CacheManager cacheManager) {
+                                       RedisTemplate<String, Deque<Serializable>> redisTemplate) {
         this.sessionManager = sessionManager;
         this.maxSession = sessionProperties.getMaxSession();
         this.kickOutAfter = sessionProperties.getKickOutAfter();
         this.kickOutUrl = sessionProperties.getKickOutUrl();
-        this.cache = cacheManager.getCache(CACHE_KEY);
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -70,7 +62,7 @@ public class KickOutSessionControlFilter extends AccessControlFilter implements 
         String username = (String) subject.getPrincipal();
         Serializable sessionId = session.getId();
 
-        Deque<Serializable> sessionIdDeque = cache.get(getCacheKey(username));
+        Deque<Serializable> sessionIdDeque = redisTemplate.opsForValue().get(getCacheKey(username));
 
         if (CollectionUtils.isEmpty(sessionIdDeque)) {
             sessionIdDeque = new LinkedList<>();
@@ -78,14 +70,12 @@ public class KickOutSessionControlFilter extends AccessControlFilter implements 
 
         //如果队列里没有此sessionId，且用户没有被踢出；放入队列
         if (!sessionIdDeque.contains(sessionId) && session.getAttribute(KICK_OUT_KEY) == null) {
-            synchronized (cache) {
+            synchronized (this) {
                 sessionIdDeque.push(sessionId);
             }
         }
 
-
-
-        synchronized (cache) {
+        synchronized (this) {
             while (sessionIdDeque.size() > maxSession) {
                 Serializable kickoutSessionId = null;
                 //如果踢出后者
@@ -105,7 +95,9 @@ public class KickOutSessionControlFilter extends AccessControlFilter implements 
             }
         }
 
-        cache.put(getCacheKey(username), sessionIdDeque);
+//        redisTemplate.opsForValue().set(getCacheKey(username), sessionIdDeque, Duration.ofSeconds(this.expire));
+        redisTemplate.opsForValue().set(getCacheKey(username), sessionIdDeque);
+        session.setAttribute("username", username);
 
         //如果被踢出了，直接退出，重定向到踢出后的地址
         if (session.getAttribute(KICK_OUT_KEY) != null) {
@@ -118,7 +110,7 @@ public class KickOutSessionControlFilter extends AccessControlFilter implements 
             if (!StringUtils.isEmpty(kickOutUrl)) {
                 WebUtils.issueRedirect(request, response, kickOutUrl);
             }
-            return true;
+            return false;
         }
 
         return true;
@@ -130,9 +122,6 @@ public class KickOutSessionControlFilter extends AccessControlFilter implements 
         return KICK_OUT_KEY + ":" + key;
     }
 
-    public synchronized void appendUser(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-
-    }
 
     @Override
     public void onApplicationEvent(LoginSuccessEvent event) {

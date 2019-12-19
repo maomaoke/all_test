@@ -3,6 +3,7 @@ package com.open.demo.shiro.config;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.session.Session;
 
 /**
  * @author CHEN-KE-CHAO
@@ -11,9 +12,9 @@ import org.apache.shiro.cache.CacheManager;
 @SuppressWarnings(value = "unchecked")
 public class ShiroRedisCacheManager implements CacheManager {
 
-    private ShiroRedisCache<String, Object> cache;
+    private ShiroRedisCache<String, Session> cache;
 
-    public ShiroRedisCacheManager(ShiroRedisCache<String, Object> cache) {
+    public ShiroRedisCacheManager(ShiroRedisCache<String, Session> cache) {
         this.cache = cache;
     }
 

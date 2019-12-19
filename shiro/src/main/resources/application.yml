@@ -12,7 +12,7 @@ spring:
 shiro:
   session:
     prefix: ${system.airport.plegStation}:session
-    expire: 1800
+    expire: 10
     kickOutUrl: /kick-out
   cache:
     prefix: ${system.airport.plegStation}:cache

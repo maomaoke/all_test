@@ -40,15 +40,20 @@ public class HelloController {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(param.getUsername(), param.getPassword());
         subject.login(token);
+        Session session = subject.getSession();
+        if (subject.isAuthenticated()) {
+            session.touch();
+        }
+
+        session.setAttribute("123", "success");
+
         //发送事件
         loginSuccessEventPublisher.loginSuccessNotification(request, response);
-
         HashMap<String, Object> map = Maps.newHashMap();
         map.put("code", 0);
         map.put("msg", "success");
 
-        Session session = subject.getSession();
-        session.setAttribute("123", "success");
+
 
         return map;
     }
@@ -58,6 +63,12 @@ public class HelloController {
         Subject subject = SecurityUtils.getSubject();
         Session session = subject.getSession();
         return "{\"message\":\"something\"}";
+    }
+
+    public String logout() {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        return "{\"msg\": \"success\"}";
     }
 
     @GetMapping("/hello")

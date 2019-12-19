@@ -11,9 +11,9 @@ import org.springframework.util.SerializationUtils;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -23,18 +23,27 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RedisSessionDAO extends AbstractSessionDAO {
 
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, Session> redisTemplate;
+
 
     private ShiroSessionProperties shiroSessionProperties;
 
+    private final long expire;
+
+    private static final long DEFAULT_TIMEOUT = 10;
+
     private final String PREFIX;
 
-    public RedisSessionDAO(RedisTemplate<String, Object> redisTemplate,
+    public RedisSessionDAO(RedisTemplate<String, Session> redisTemplate,
                            ShiroSessionProperties shiroSessionProperties) {
         this.redisTemplate = redisTemplate;
         this.shiroSessionProperties = shiroSessionProperties;
         PREFIX = shiroSessionProperties.getPrefix();
-
+        Long expire = shiroSessionProperties.getExpire();
+        if (Objects.isNull(expire) || expire < DEFAULT_TIMEOUT) {
+            expire = DEFAULT_TIMEOUT;
+        }
+        this.expire = expire;
     }
 
     private String getKey(String id) {
@@ -44,8 +53,7 @@ public class RedisSessionDAO extends AbstractSessionDAO {
 
     private void saveSession(Session session) {
         if (Objects.nonNull(session) && Objects.nonNull(session.getId())) {
-            redisTemplate.opsForValue().set(getKey(session.getId().toString()), session,
-                    Duration.ofSeconds(shiroSessionProperties.getExpire()));
+            redisTemplate.opsForValue().set(getKey(session.getId().toString()), session);
         }
     }
 
@@ -70,7 +78,6 @@ public class RedisSessionDAO extends AbstractSessionDAO {
         if (Objects.isNull(sessionId)) {
             return null;
         }
-
         return (Session) redisTemplate.opsForValue().get(getKey(sessionId.toString()));
     }
 
@@ -87,9 +94,6 @@ public class RedisSessionDAO extends AbstractSessionDAO {
         if (log.isDebugEnabled()) {
             log.debug("删除session, sessionId = {}", session.getId().toString());
         }
-        if (Objects.isNull(session) || Objects.isNull(session.getId())) {
-            return;
-        }
         redisTemplate.delete(getKey(session.getId().toString()));
     }
 
@@ -102,9 +106,8 @@ public class RedisSessionDAO extends AbstractSessionDAO {
         if (CollectionUtils.isEmpty(sessionValueSet)) {
             return null;
         }
-
-        return sessionValueSet.stream()
-                .map(item -> (Session) SerializationUtils.deserialize(Objects.requireNonNull(item).getBytes()))
-                .collect(Collectors.toList());
+        List<Session> sessionList = redisTemplate.opsForValue().multiGet(sessionValueSet);
+        return CollectionUtils.isEmpty(sessionList) ? null : sessionList;
     }
+
 }
