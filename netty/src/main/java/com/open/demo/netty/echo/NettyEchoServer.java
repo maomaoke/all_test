@@ -66,7 +66,7 @@ public class NettyEchoServer {
     }
 
     public static void main(String[] args) {
-        new NettyEchoServer(8088).runServer();
+        new NettyEchoServer(9999).runServer();
     }
 }
 

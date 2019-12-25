@@ -40,7 +40,7 @@ public class NettyEchoClient {
             b.channel(NioSocketChannel.class);
             //3.设置监听端口
             b.remoteAddress(serverIp, serverPort);
-            //4.设置监听端口
+            //4.设置byte buf参数
             b.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
             //5.装配子通道流水线
             b.handler(new ChannelInitializer<SocketChannel>() {
@@ -59,7 +59,7 @@ public class NettyEchoClient {
                }
             });
 
-            //阻塞 知道连接成功
+            //阻塞 直到连接成功
             channelFuture.sync();
             Channel channel = channelFuture.channel();
             Scanner scanner = new Scanner(System.in);
@@ -80,6 +80,6 @@ public class NettyEchoClient {
     }
 
     public static void main(String[] args) {
-        new NettyEchoClient("0:0:0:0:0:0:0:0", 8088).runClient();
+        new NettyEchoClient("0:0:0:0:0:0:0:0", 9999).runClient();
     }
 }
