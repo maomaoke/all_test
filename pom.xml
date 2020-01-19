@@ -28,6 +28,7 @@
         <module>shiro</module>
         <module>concurrent</module>
         <module>effective_java</module>
+        <module>servlet</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>

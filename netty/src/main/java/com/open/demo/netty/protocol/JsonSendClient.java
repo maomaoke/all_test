@@ -76,7 +76,7 @@ public class JsonSendClient {
             //发送完成关闭channel
             ChannelFuture closeFuture = channel.closeFuture();
             //堵塞 直到通道关闭
-            channelFuture.sync();
+            closeFuture.sync();
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -90,6 +90,8 @@ public class JsonSendClient {
     }
 
     public static void main(String[] args) {
-        new JsonSendClient("127.0.0.1", 9999).runClient();
+//        new JsonSendClient("127.0.0.1", 9999).runClient();
     }
+
+
 }
