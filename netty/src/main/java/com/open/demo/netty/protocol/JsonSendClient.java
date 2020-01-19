@@ -40,7 +40,7 @@ public class JsonSendClient {
             //设置NIO类型通道
             bootstrap.channel(NioSocketChannel.class);
             //设置监听端口
-            bootstrap.remoteAddress("127.0.0.1", 9999);
+            bootstrap.remoteAddress(serverAddress, port);
             //设置通道的参数
             bootstrap.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
             //装配通道流水线
