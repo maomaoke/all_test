@@ -1,3 +1,5 @@
+package test;
+
 public class SortTestHelper {
 
     // SortTestHelper不允许产生任何实例
