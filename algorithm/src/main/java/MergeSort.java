@@ -57,7 +57,7 @@ public class MergeSort {
     }
 
     /**
-     * 删除排序
+     * 插入排序
      * @param arr
      * @param left
      * @param right
