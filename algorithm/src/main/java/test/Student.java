@@ -1,3 +1,5 @@
+package test;
+
 /**
  * @author chenkechao
  * @date 2019/10/10 9:19 下午
@@ -20,7 +22,7 @@ public class Student implements Comparable<Student> {
 
     @Override
     public String toString() {
-        return "Student{" +
+        return "test.Student{" +
                 "name='" + name + '\'' +
                 ", score=" + score +
                 '}';

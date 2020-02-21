@@ -1,3 +1,5 @@
+package test;
+
 /**
  * @author chenkechao
  * @date 2019/10/19 10:45 上午
@@ -108,7 +110,7 @@ public class MaxHeap<E extends Comparable> {
         return count == 0;
     }
 
-    // 测试 MaxHeap
+    // 测试 test.MaxHeap
     public static void main(String[] args) {
 
         MaxHeap<Integer> maxHeap = new MaxHeap<Integer>(100);
