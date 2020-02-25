@@ -19,7 +19,7 @@ public class QuickSort3 {
         }
         swap(arr, l, (int) (Math.random() * (r - l + 1)) + l);
         Comparable v = arr[l];
-        int i = l, lt = l, gt = r + 1;
+        int i = l, lt = l + 1, gt = r + 1;
         while (i < gt) {
             if (arr[i].compareTo(v) == 0) {
                 i++;
