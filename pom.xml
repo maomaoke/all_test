@@ -29,6 +29,8 @@
         <module>effective_java</module>
         <module>servlet</module>
         <module>spring-bean</module>
+        <module>spring-starter</module>
+        <module>spring-context</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>
