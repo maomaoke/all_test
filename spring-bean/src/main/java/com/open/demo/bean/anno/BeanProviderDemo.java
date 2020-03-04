@@ -1,10 +1,13 @@
 package com.open.demo.bean.anno;
 
+import com.open.demo.bean.pojo.User;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +18,10 @@ import java.util.Map;
  */
 public class BeanProviderDemo {
 
+    @Autowired
+    @Lazy
+    private User user;
+
     public static void main(String[] args) {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
 
@@ -23,23 +30,14 @@ public class BeanProviderDemo {
         applicationContext.refresh();
 
         ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
-        if (beanFactory instanceof ListableBeanFactory) {
-            ListableBeanFactory listableBeanFactory = beanFactory;
-            Map<String, String> beanMap = listableBeanFactory.getBeansOfType(String.class);
-            System.out.println(beanMap);
-        }
 
+        User bean = applicationContext.getBean(User.class);
 
         applicationContext.close();
     }
 
     @Bean
-    public String helloWorld() {
-        return "Hello, World";
-    }
-
-    @Bean
-    public String java() {
-        return "java";
+    public User user() {
+        return new User("陈可超");
     }
 }

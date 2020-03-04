@@ -1,11 +1,8 @@
 package com.open.demo.bean;
 
-import com.open.demo.bean.pojo.User;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.Iterator;
-import java.util.ServiceLoader;
 
 /**
  * todo description
@@ -25,4 +22,6 @@ public class BeanInstantiationDemo {
         Object user = applicationContext.getBean("user");
         System.out.println(user);
     }
+
+
 }
