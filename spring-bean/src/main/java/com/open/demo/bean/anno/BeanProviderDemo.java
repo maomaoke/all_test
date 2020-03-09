@@ -1,16 +1,10 @@
 package com.open.demo.bean.anno;
 
 import com.open.demo.bean.pojo.User;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author chenkechao
@@ -19,7 +13,6 @@ import java.util.Map;
 public class BeanProviderDemo {
 
     @Autowired
-    @Lazy
     private User user;
 
     public static void main(String[] args) {
