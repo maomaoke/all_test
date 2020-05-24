@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
+    <process id="purchase" name="purchase">
+        <startEvent id="startEvent" name="start" activiti:initiator="applyUserId">
+            <extensionElements>
+                <activiti:formProperty id="dueDate" name="到货期限" type="date" datePattern="yyyy-MM-dd" required="true"/>
+                <activiti:formProperty id="listing" name="物品清单" type="string" required="true"/>
+                <activiti:formProperty id="amountMoney" name="总金额" type="decimal" required="true"/>
+            </extensionElements>
+        </startEvent>
+        <userTask id="deptLeaderAudit" name="领导审批" activiti:candidateGroups="deptLeader">
+            <extensionElements>
+                <activiti:formProperty id="applyUser" name="申请人" type="string" variable="applyUserId" writable="false"/>
+                <activiti:formProperty id="dueDate" name="到货期限" type="date" datePattern="yyyy-MM-dd" writable="false"/>
+                <activiti:formProperty id="listing" name="物品清单" type="string" writable="false"/>
+                <activiti:formProperty id="amountMoney" name="总金额" type="decimal" writable="false"/>
+                <activiti:formProperty id="deptLeaderApproved" name="是否同意" type="enum" writable="true">
+                    <activiti:value id="true" name="同意"/>
+                    <activiti:value id="false" name="驳回"/>
+                </activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <exclusiveGateway id="exclusiveGateway1" name="网关1"/>
+        <sequenceFlow id="flow2" sourceRef="deptLeaderAudit" targetRef="exclusiveGateway1"/>
+        <userTask id="contactSupplier" name="联系供货商" activiti:candidateGroups="supportCrew">
+            <extensionElements>
+                <activiti:formProperty id="applyUser" name="申请人" type="string" variable="applyUserId" writable="false"/>
+                <activiti:formProperty id="dueDate" name="到货期限" type="date" datePattern="yyyy-MM-dd" writable="false"/>
+                <activiti:formProperty id="listing" name="物品清单" type="string" writable="false"/>
+                <activiti:formProperty id="amountMoney" name="总金额" type="decimal" writable="false"/>
+                <activiti:formProperty id="supplier" name="供货商" type="string" required="true" writable="true"/>
+                <activiti:formProperty id="bankName" name="开户行" type="string" required="true" writable="true"/>
+                <activiti:formProperty id="bankAccount" name="银行账号" type="string" required="true" writable="true"/>
+                <activiti:formProperty id="planDate" name="预计交货时间" type="date" datePattern="yyyy-MM-dd" required="true"
+                                       writable="true"/>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow3" sourceRef="exclusiveGateway1" targetRef="contactSupplier">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[
+                    ${deptLeaderApproved == 'true'}
+                ]]>
+            </conditionExpression>
+        </sequenceFlow>
+        <subProcess id="subProcessPay" name="付费子流程">
+            <startEvent id="startEvent2" name="Start">
+            </startEvent>
+            <exclusiveGateway id="exclusiveGateway2" name="Exclusive Gateway">
+            </exclusiveGateway>
+            <sequenceFlow id="flow5" sourceRef="treasurerAudit" targetRef="exclusiveGateway5"
+                          activiti:candidateGroups="generalManager"/>
+            <userTask id="generalManagerAudit" name="总经理审批" activiti:candidateGroups="generalManager">
+                <extensionElements>
+                    <activiti:formProperty id="applyUser" name="申请人" type="string" variable="applyUserId"
+                                           writable="false"/>
+                    <activiti:formProperty id="usage" name="用途" type="string" expression="${usage}" writable="false"/>
+                    <activiti:formProperty id="amountMoney" name="总金额" type="decimal" writable="false"/>
+                    <activiti:formProperty id="generalManagerApproved" name="是否同意" type="enum">
+                        <activiti:value id="true" name="同意"/>
+                        <activiti:value id="false" name="驳回"/>
+                    </activiti:formProperty>
+                </extensionElements>
+            </userTask>
+            <sequenceFlow id="flow6" name="金额 &gt;= 1万元" sourceRef="exclusiveGateway2" targetRef="generalManagerAudit">
+                <conditionExpression xsi:type="tFormalExpression">
+                    <![CDATA[${amountMoney >= 10000}]]></conditionExpression>
+            </sequenceFlow>
+            <exclusiveGateway id="exclusiveGateway3" name="Exclusive Gateway"/>
+            <sequenceFlow id="flow7" sourceRef="generalManagerAudit" targetRef="exclusiveGateway3"/>
+            <userTask id="pay" name="出纳付款" activiti:candidateGroups="cashier">
+                <extensionElements>
+                    <activiti:formProperty id="applyUser" name="申请人" type="string" variable="applyUserId"
+                                           writable="false"/>
+                    <activiti:formProperty id="usage" name="用途" type="string" expression="${usage}" writable="false"/>
+                    <activiti:formProperty id="supplier" name="受款方" type="string" writable="false"/>
+                    <activiti:formProperty id="bankName" name="开户行" type="string" writable="false"/>
+                    <activiti:formProperty id="bankAccount" name="银行账号" type="string" writable="false"/>
+                </extensionElements>
+            </userTask>
+            <sequenceFlow id="flow8" sourceRef="exclusiveGateway3" targetRef="pay">
+                <conditionExpression xsi:type="tFormalExpression">
+                    <![CDATA[${generalManagerApproved == 'true'}]]></conditionExpression>
+            </sequenceFlow>
+            <endEvent id="endEvent1" name="End"/>
+            <sequenceFlow id="flow9" sourceRef="pay" targetRef="endEvent1"/>
+            <sequenceFlow id="flow10" name="总经理不同意" sourceRef="exclusiveGateway3" targetRef="errorEndEvent1">
+                <conditionExpression xsi:type="tFormalExpression">
+                    <![CDATA[${generalManagerApproved == 'false'}]]></conditionExpression>
+            </sequenceFlow>
+            <endEvent id="errorEndEvent1" name="TerminateEndEvent">
+                <errorEventDefinition errorRef="PAYMENT_REJECT"/>
+            </endEvent>
+            <sequenceFlow id="flow18" name="金额 &lt; 1万" sourceRef="exclusiveGateway2" targetRef="pay">
+                <conditionExpression xsi:type="tFormalExpression">
+                    <![CDATA[${amountMoney < 10000}]]></conditionExpression>
+            </sequenceFlow>
+            <userTask id="treasurerAudit" name="财务审批" activiti:candidateGroups="treasurer">
+                <extensionElements>
+                    <activiti:formProperty id="applyUser" name="申请人" type="string" variable="applyUserId"
+                                           writable="false"/>
+                    <activiti:formProperty id="usage" name="用途" type="string" expression="${usage}"
+                                           writable="false"/>
+                    <activiti:formProperty id="amountMoney" name="总金额" type="decimal"
+                                           writable="false"/>
+                    <activiti:formProperty id="treasurerApproved" name="是否同意" type="enum">
+                        <activiti:value id="true" name="同意"/>
+                        <activiti:value id="false" name="驳回"/>
+                    </activiti:formProperty>
+                </extensionElements>
+            </userTask>
+            <sequenceFlow id="flow25" sourceRef="startEvent2" targetRef="treasurerAudit"/>
+            <exclusiveGateway id="exclusiveGateway5" name="Exclusive Gateway"/>
+            <sequenceFlow id="flow26" sourceRef="exclusiveGateway5" targetRef="exclusiveGateway2">
+                <conditionExpression xsi:type="tFormalExpression">
+                    <![CDATA[${treasurerApproved == 'true'}]]></conditionExpression>
+            </sequenceFlow>
+            <sequenceFlow id="flow27" name="财务不同意" sourceRef="exclusiveGateway5" targetRef="errorEndEvent2">
+                <conditionExpression xsi:type="tFormalExpression">
+                    <![CDATA[${treasurerApproved == 'false'}]]></conditionExpression>
+            </sequenceFlow>
+            <endEvent id="errorEndEvent2" name="End">
+                <errorEventDefinition errorRef="PAYMENT_REJECT"/>
+            </endEvent>
+        </subProcess>
+        <boundaryEvent id="boundaryError1" name="Error" attachedToRef="subProcessPay">
+            <errorEventDefinition errorRef="PAYMENT_REJECT"/>
+        </boundaryEvent>
+        <userTask id="modifyApply" name="调整申请" activiti:assignee="${applyUserId}">
+            <extensionElements>
+                <activiti:formProperty id="dueDate" name="到货期限" type="date" expression="${dueDate}"
+                                       datePattern="yyyy-MM-dd" required="true"/>
+                <activiti:formProperty id="listing" name="物品清单" type="string" expression="${listing}"
+                                       required="true"/>
+                <activiti:formProperty id="amountMoney" name="总金额" type="decimal" expression="${amountMoney}"
+                                       required="true"/>
+            </extensionElements>
+        </userTask>
+        <exclusiveGateway id="exclusiveGateway4" name="Exclusive Gateway"/>
+        <sequenceFlow id="flow15" sourceRef="modifyApply" targetRef="exclusiveGateway4"/>
+        <sequenceFlow id="flow16" name="调整后重新申请" sourceRef="exclusiveGateway4" targetRef="deptLeaderAudit">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reApply == 'true'}]]></conditionExpression>
+        </sequenceFlow>
+        <endEvent id="endEvent2" name="End"/>
+        <sequenceFlow id="flow17" sourceRef="exclusiveGateway4" targetRef="endEvent2">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reApply == 'false'}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow19" sourceRef="exclusiveGateway1" targetRef="modifyApply">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${deptLeaderApproved == 'false'}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow20" sourceRef="startEvent" targetRef="deptLeaderAudit"/>
+        <sequenceFlow id="flow21" name="捕获子流程的异常事件" sourceRef="boundaryError1" targetRef="modifyApply"/>
+        <sequenceFlow id="flow22" name="进入付费子流程" sourceRef="contactSupplier" targetRef="subProcessPay">
+            <extensionElements>
+                <activiti:executionListener event="take"
+                                            expression="${execution.setVariable('usage', listing)}"/>
+            </extensionElements>
+        </sequenceFlow>
+        <userTask id="confirmReceipt" name="收货确认" activiti:assignee="${applyUserId}">
+            <extensionElements>
+                <activiti:formProperty id="applyUser" name="申请人" type="string" variable="applyUserId"
+                                       writable="false"/>
+                <activiti:formProperty id="dueDate" name="到货期限" type="date" datePattern="yyyy-MM-dd"
+                                       writable="false"/>
+                <activiti:formProperty id="listing" name="物品清单" type="string" writable="false"/>
+                <activiti:formProperty id="amountMoney" name="总金额" type="decimal"
+                                       writable="false"/>
+                <activiti:formProperty id="supplier" name="供货方" type="string" writable="false"/>
+                <activiti:formProperty id="bankName" name="开户行" type="string" writable="false"/>
+                <activiti:formProperty id="bankAccount" name="银行账号" type="string"
+                                       writable="false"/>
+                <activiti:formProperty id="planDate" name="预计交货日期" type="date" datePattern="yyyy-MM-dd"
+                                       writable="false"/>
+            </extensionElements>
+        </userTask>
+        <endEvent id="endEvent3" name="End"/>
+        <sequenceFlow id="flow23" sourceRef="confirmReceipt" targetRef="endEvent3"/>
+        <sequenceFlow id="flow24" sourceRef="subProcessPay" targetRef="confirmReceipt"/>
+    </process>
+</definitions>
