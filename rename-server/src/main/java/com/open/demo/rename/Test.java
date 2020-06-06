@@ -13,22 +13,22 @@ public class Test {
 
 
 
-        String template_name = "132讲";
-        //springboot2.0深度实践132讲 - 051 - 06 12 自定义 Resolver 实现
-        String parentDir = "/Users/chenkeke/Downloads/springboot2.0深度实践的副本";
+        String template_name = "【更多IT教程 微信107564881】";
+        String parentDir = "/Users/chenkeke/Desktop/study/慕课网/Nginx入门到实践Nginx中间件/第6章 新特性篇";
 
         //获得输入流
 
 
         File root = new File(parentDir);
-        if (root.exists() || root.isDirectory()) {
+        if (root.exists() && root.isDirectory()) {
             File[] files = root.listFiles();
             assert files != null && files.length != 0;
             for (File file : files) {
                 //重命名
                 if (file.getName().contains(template_name)) {
                     int index = file.getName().indexOf(template_name);
-                    String newFileName = parentDir + "/" + "springboot2.0深度实践" + file.getName().substring(index + 9);
+                    String newFileName = parentDir + "/" + file.getName().substring(0, index) + ".mp4";
+                    System.out.println(newFileName);
                     File newFile = new File(newFileName);
                     file.renameTo(newFile);
                 }
