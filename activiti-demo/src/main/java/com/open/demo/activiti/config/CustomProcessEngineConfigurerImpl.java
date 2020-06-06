@@ -18,6 +18,8 @@ public class CustomProcessEngineConfigurerImpl implements CustomProcessEngineCon
 
     @Override
     public void configure(SpringProcessEngineConfiguration processEngineConfiguration) {
+
+
         processEngineConfiguration.setCustomFormTypes(customFormTypes());
     }
 
