@@ -1,7 +1,6 @@
 package com.open.demo.rename;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * @author chenkechao
@@ -9,30 +8,42 @@ import java.util.ArrayList;
  */
 public class Test {
 
+    private static final String TEMPLATE_NAME = "【更多IT教程 微信352852792】";
+    private static final String PARENT_DIR = "/Users/chenkeke/Downloads/中小型企业通用自动化运维架构,拿来就能用";
+
     public static void main(String[] args) {
 
+        File root = new File(PARENT_DIR);
+        find(root);
+    }
 
-
-        String template_name = "【更多IT教程 微信107564881】";
-        String parentDir = "/Users/chenkeke/Desktop/study/慕课网/Nginx入门到实践Nginx中间件/第6章 新特性篇";
-
-        //获得输入流
-
-
-        File root = new File(parentDir);
-        if (root.exists() && root.isDirectory()) {
-            File[] files = root.listFiles();
-            assert files != null && files.length != 0;
-            for (File file : files) {
-                //重命名
-                if (file.getName().contains(template_name)) {
-                    int index = file.getName().indexOf(template_name);
-                    String newFileName = parentDir + "/" + file.getName().substring(0, index) + ".mp4";
-                    System.out.println(newFileName);
-                    File newFile = new File(newFileName);
-                    file.renameTo(newFile);
-                }
+    private static void find(File file) {
+        if (!file.exists()) {
+            return;
+        }
+        if (file.isDirectory()) {
+            File[] listFiles = file.listFiles();
+            for (File subFile : listFiles) {
+                find(subFile);
+            }
+        } else {
+            //重命名
+            if (file.getName().contains(TEMPLATE_NAME)) {
+                renameFile(file);
             }
         }
+    }
+
+    private static void renameFile(File file) {
+        String newFileName = null;
+        int index = file.getName().indexOf(TEMPLATE_NAME);
+        if (file.isDirectory()) {
+            newFileName = PARENT_DIR + "/" + file.getName().substring(0, index);
+        } else {
+            newFileName = PARENT_DIR + "/" + file.getName().substring(0, index) + ".mp4";
+        }
+        System.out.println(newFileName);
+        File newFile = new File(newFileName);
+        file.renameTo(newFile);
     }
 }
