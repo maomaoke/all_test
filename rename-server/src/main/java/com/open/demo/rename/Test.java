@@ -8,8 +8,8 @@ import java.io.File;
  */
 public class Test {
 
-    private static final String TEMPLATE_NAME = "【更多IT教程 微信352852792】";
-    private static final String PARENT_DIR = "/Users/chenkeke/Downloads/中小型企业通用自动化运维架构,拿来就能用";
+    private static final String TEMPLATE_NAME = "Spring Cloud Alibaba从入门到进阶 - ";
+    private static final String PARENT_DIR = "/Users/chenkeke/Desktop/study/慕课网/Spring Cloud Alibaba从入门到进阶";
 
     public static void main(String[] args) {
 
@@ -23,13 +23,15 @@ public class Test {
         }
         if (file.isDirectory()) {
             File[] listFiles = file.listFiles();
-            for (File subFile : listFiles) {
-                find(subFile);
+            if (listFiles != null) {
+                for (File subFile : listFiles) {
+                    find(subFile);
+                }
             }
         } else {
             //重命名
             if (file.getName().contains(TEMPLATE_NAME)) {
-                renameFile(file);
+                splitFileName(file);
             }
         }
     }
@@ -46,4 +48,18 @@ public class Test {
         File newFile = new File(newFileName);
         file.renameTo(newFile);
     }
+
+    private static void splitFileName(File file) {
+        int len = "Spring Cloud Alibaba从入门到进阶 - 011 - Spring Cloud Alibaba从入门到进阶 ".length();
+        String newFileName = null;
+        if (file.isDirectory()) {
+            newFileName = PARENT_DIR + "/" + file.getName().substring(len);
+        } else {
+            newFileName = PARENT_DIR + "/" + file.getName().substring(len);
+        }
+        System.out.println(newFileName);
+        File newFile = new File(newFileName);
+        file.renameTo(newFile);
+    }
+
 }
