@@ -8,8 +8,9 @@ import java.io.File;
  */
 public class Test {
 
-    private static final String TEMPLATE_NAME = "Spring Cloud Alibaba从入门到进阶 - ";
-    private static final String PARENT_DIR = "/Users/chenkeke/Desktop/study/慕课网/Spring Cloud Alibaba从入门到进阶";
+    private static final String TEMPLATE_NAME = "ZooKeeper实战与源码剖析（完结）";
+    private static final String PARENT_DIR = "/Users/chenkeke/Downloads/XLDownload/ZooKeeper实战与源码剖析";
+    private static final int EXTRA_LEN = 9;
 
     public static void main(String[] args) {
 
@@ -32,6 +33,7 @@ public class Test {
             //重命名
             if (file.getName().contains(TEMPLATE_NAME)) {
                 splitFileName(file);
+//                renameFile(file);
             }
         }
     }
@@ -45,12 +47,12 @@ public class Test {
             newFileName = PARENT_DIR + "/" + file.getName().substring(0, index) + ".mp4";
         }
         System.out.println(newFileName);
-        File newFile = new File(newFileName);
-        file.renameTo(newFile);
+//        File newFile = new File(newFileName);
+//        file.renameTo(newFile);
     }
 
     private static void splitFileName(File file) {
-        int len = "Spring Cloud Alibaba从入门到进阶 - 011 - Spring Cloud Alibaba从入门到进阶 ".length();
+        int len = TEMPLATE_NAME.length() + EXTRA_LEN;
         String newFileName = null;
         if (file.isDirectory()) {
             newFileName = PARENT_DIR + "/" + file.getName().substring(len);

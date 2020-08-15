@@ -33,6 +33,7 @@
         <module>spring-context</module>
         <module>rename-server</module>
         <module>socket-demo</module>
+        <module>ssl-socket</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>
