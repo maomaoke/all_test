@@ -16,7 +16,7 @@ public class TcpServer {
 
     private final int port;
     private Listener listener;
-    private List<ClientHandler> clientHandlerList = new ArrayList<>();
+    private final List<ClientHandler> clientHandlerList = new ArrayList<>();
 
     public TcpServer(int port) {
         this.port = port;

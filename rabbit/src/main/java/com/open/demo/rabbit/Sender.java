@@ -17,13 +17,12 @@ public class Sender {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
-    public void send() {
+    public void send(String username) {
 
-        String msg = "hello " + new Date().toString();
+        String msg = "hello " + username + new Date().toString();
 
         System.out.println(msg);
         //将 msg 文本 发送到 'hello'队列中
         amqpTemplate.convertAndSend("hello", msg);
-
     }
 }

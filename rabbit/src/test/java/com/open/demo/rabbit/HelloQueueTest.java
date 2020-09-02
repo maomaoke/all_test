@@ -14,6 +14,6 @@ public class HelloQueueTest extends RabbitApplicationTests {
 
     @Test
     public void test() {
-        sender.send();
+        sender.send("陈可超");
     }
 }

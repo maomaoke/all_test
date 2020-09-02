@@ -1,7 +1,10 @@
 package com.open.demo.rabbit.controller;
 
 import com.open.demo.rabbit.Sender;
+import com.open.demo.rabbit.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,14 +14,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
-    private Sender sender;
+    private final UserService userService;
 
-    public TestController(Sender sender) {
+    private final Sender sender;
+
+    public TestController(Sender sender, UserService userService) {
         this.sender = sender;
+        this.userService = userService;
     }
 
-    @GetMapping("/test")
-    public void helloQueue() {
-        sender.send();
+    @GetMapping("/test/{username}")
+    public void helloQueue(@PathVariable("username") String username) {
+        sender.send(username);
+    }
+
+    @PostMapping("/user/{username}")
+    public void createUser(@PathVariable("username") String username) {
+        userService.createUser(username);
     }
 }
