@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
  * @author CHEN-KE-CHAO
  * @date 2019-08-05-13:12
  */
-@Configuration
+//@Configuration
 public class CommonConfig {
 
     private final static String DELAY_QUEUE_PER_MESSAGE_TTL_NAME = "delay_queue_per_message_ttl";

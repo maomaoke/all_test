@@ -1,6 +1,5 @@
 package com.open.demo.rabbit.client;
 
-import ch.qos.logback.core.util.TimeUtil;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
@@ -13,16 +12,16 @@ import java.util.concurrent.TimeoutException;
  */
 public class RabbitConsumer {
     private static final String QUEUE_NAME = "queue_demo";
-    private static final String IP_ADDRESS = "192.168.124.59";
-    private static final int port = 5672;
+    private static final String IP_ADDRESS = "127.0.0.1";
+    private static final int PORT = 5672;
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        Address[] addresses = {new Address(IP_ADDRESS, port)};
+        Address[] addresses = {new Address(IP_ADDRESS, PORT)};
 
 
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setUsername("root");
-        factory.setPassword("123456");
+        factory.setUsername("guest");
+        factory.setPassword("guest");
 
         Connection connection = factory.newConnection(addresses);
         Channel channel = connection.createChannel();

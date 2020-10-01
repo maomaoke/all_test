@@ -2,10 +2,15 @@ spring:
   application:
     name: rabbitmq-hello
   rabbitmq:
-    host: 192.168.124.68
+    host: 127.0.0.1
     port: 5672
     username: guest
     password: guest
+    listener:
+      simple:
+        ##取消消费者的拒绝(异常)重回队列策略, false 代表 不重回队列
+        default-requeue-rejected: false
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8
@@ -15,3 +20,4 @@ spring:
 mybatis-plus:
   check-config-location: true
   mapper-locations: classpath:/mapper/*Mapper.xml
+

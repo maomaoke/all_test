@@ -27,12 +27,12 @@ public class RabbitApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(RabbitApplication.class, args);
-        RabbitApplication rabbitApplication = applicationContext.getBean(RabbitApplication.class);
-
-        ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
-        RabbitTransactionManager rabbitTransactionManager = beanFactory.getBean(RabbitTransactionManager.class);
-
-        System.out.println(rabbitApplication.transactionManager);
+//        RabbitApplication rabbitApplication = applicationContext.getBean(RabbitApplication.class);
+//
+//        ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
+//        RabbitTransactionManager rabbitTransactionManager = beanFactory.getBean(RabbitTransactionManager.class);
+//
+//        System.out.println(rabbitApplication.transactionManager);
     }
 
 
