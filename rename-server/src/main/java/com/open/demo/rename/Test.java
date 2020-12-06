@@ -8,47 +8,52 @@ import java.io.File;
  */
 public class Test {
 
-    private static final String TEMPLATE_NAME = "2020-2-12 13-49-42【更多教程微信352852792】";
-    private static final String PARENT_DIR = "/Users/chenkeke/Desktop/study/视频/深度解锁SpringCloud主流组件 一战解决微服务诸多难题";
-    private static final int EXTRA_LEN = 4;
+    private static final String ROOT_DIR = "/Volumes/Disk/慕课网/Java并发核心知识体系精讲";
+
+    private static final String FIX_STR = "【更多IT教程 微信352852792】(1).mp4";
+
+    private static final int LEN = "【更多IT教程 微信352852792】(1).mp4".length();
 
     public static void main(String[] args) {
 
-        File root = new File(PARENT_DIR);
-        find(root);
+        File rootFile = new File(ROOT_DIR);
+
+        renameFile(rootFile);
     }
 
-    private static void find(File file) {
-        if (!file.exists()) {
-            return;
-        }
+    private static void renameFile(File file) {
         if (file.isDirectory()) {
-            File[] listFiles = file.listFiles();
-            if (listFiles != null) {
-                for (File subFile : listFiles) {
-                    find(subFile);
-                }
+            //递归寻找 文件
+            File[] childList = file.listFiles();
+            if (childList == null || childList.length == 0) {
+                return;
+            }
+            for (File child : childList) {
+                renameFile(child);
             }
         } else {
-            //重命名
-            if (file.getName().contains(TEMPLATE_NAME)) {
-                splitFileName(file);
+            if (file.getName().endsWith(".mp4")) {
+                //rename
+                if (file.getName().contains(FIX_STR)) {
+                    doRename(file);
+                }
             }
         }
     }
 
+    private static void doRename(File file) {
+        String name = rename1(file.getName());
+//        System.out.println(name);
 
-    private static void splitFileName(File file) {
-        int len = TEMPLATE_NAME.length() + EXTRA_LEN;
-        String newFileName = null;
-//        if (file.isDirectory()) {
-//            newFileName = PARENT_DIR + "/" + file.getName().substring(len);
-//        } else {
-            newFileName = PARENT_DIR + "/" + file.getName().substring(len) + ".mp4";
-//        }
-        System.out.println(newFileName);
-//        File newFile = new File(newFileName);
-//        file.renameTo(newFile);
+        File newFile = new File(file.getParent(), name);
+        file.renameTo(newFile);
+//        System.out.println(newFile.getAbsolutePath());
+    }
+
+    private static String rename1(String fileName) {
+
+        String name = fileName.substring(0, fileName.length() - LEN) + ".mp4";
+        return name;
     }
 
 }

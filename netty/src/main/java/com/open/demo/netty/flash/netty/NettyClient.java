@@ -2,7 +2,6 @@ package com.open.demo.netty.flash.netty;
 
 import com.open.demo.netty.LoginUtil;
 import com.open.demo.netty.flash.netty.handler.ClientHandler;
-import com.open.demo.netty.flash.netty.handler.FirstClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;

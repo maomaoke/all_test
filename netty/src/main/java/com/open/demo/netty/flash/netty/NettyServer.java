@@ -1,9 +1,9 @@
 package com.open.demo.netty.flash.netty;
 
 import com.open.demo.netty.flash.netty.handler.ServerHandler;
-import com.open.demo.netty.flash.netty.handler.out.OutBoundHandlerA;
-import com.open.demo.netty.flash.netty.handler.out.OutBoundHandlerB;
-import com.open.demo.netty.flash.netty.handler.out.OutBoundHandlerC;
+import com.open.demo.netty.flash.netty.handler.in.InBoundHandlerA;
+import com.open.demo.netty.flash.netty.handler.in.InBoundHandlerB;
+import com.open.demo.netty.flash.netty.handler.in.InBoundHandlerC;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -46,11 +46,16 @@ public class NettyServer {
 //                                System.out.println(s);
 //                            }
 //                        });
-                        pipeline.addLast(new ServerHandler());
 
-                        pipeline.addLast(new OutBoundHandlerA());
-                        pipeline.addLast(new OutBoundHandlerB());
-                        pipeline.addLast(new OutBoundHandlerC());
+//                        pipeline.addLast(new InBoundHandlerA());
+//                        pipeline.addLast(new InBoundHandlerB());
+//                        pipeline.addLast(new InBoundHandlerC());
+
+                        pipeline.addLast(new ServerHandler());
+//
+//                        pipeline.addLast(new OutBoundHandlerA());
+//                        pipeline.addLast(new OutBoundHandlerB());
+//                        pipeline.addLast(new OutBoundHandlerC());
                     }
                 });
 
